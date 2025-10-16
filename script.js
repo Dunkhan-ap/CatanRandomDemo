@@ -1859,41 +1859,40 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
 function demarrerGeneration(e, retryCount = 0) {
-  if (e) e.preventDefault();
+  e.preventDefault();
   e.stopPropagation();
-  e.target.blur(); // ← empêche Safari de refocus en haut
-  
+
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
-  const originalText = btn.textContent;
+  // ⚠️ Important : retire le focus avant de désactiver
+  btn.blur();
 
-  // 🕓 Démarre le chronomètre haute précision
+  const originalText = btn.textContent;
   const startTime = performance.now();
 
-    //btn.disabled = true;
-    btn.classList.add("loading");
+  //btn.disabled = true;
+  btn.classList.add("loading");
 
-    const lang = document.documentElement.lang || "fr";
-    btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
+  const lang = document.documentElement.lang || "fr";
+  btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
 
   setTimeout(() => {
     generation(retryCount);
 
-    // 🧭 Fin du chronomètre
     const endTime = performance.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
+    console.log(`✅ Génération terminée en ${duration}s`);
 
-    // 📜 Log clair en console
-    console.log(
-      `✅ Génération terminée en ${duration}s`
-    );
+    //btn.disabled = false;
+    btn.classList.remove("loading");
+    btn.textContent = originalText;
 
-      //btn.disabled = false;
-      btn.classList.remove("loading");
-      btn.textContent = originalText;
+    // ✅ Redonne le focus proprement après réactivation
+    btn.focus({ preventScroll: true });
   }, 100);
 }
+
 
 
 /********************
