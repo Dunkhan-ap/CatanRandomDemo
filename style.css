@@ -76,12 +76,10 @@ button.loading {
   position: relative;
 }
 
-button:focus {
-  outline: none;
+#btn-generation {
+  touch-action: manipulation; /* évite le double-tap zoom et le recentrage iOS */
 }
-button:focus-visible {
-  outline: none;
-}
+
 
 /* ====== Classe utilitaire cachée ====== */
 .hidden {
