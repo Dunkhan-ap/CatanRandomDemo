@@ -4,36 +4,32 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Récupérer le code
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # ✅ nécessaire pour gh-pages (sinon erreur exit code 128)
+          fetch-depth: 0  # ✅ important
 
-      # 2️⃣ Installer Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      # 3️⃣ Installer les dépendances
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Lancer le build
       - name: Run build
         run: npm run build
 
-      # 5️⃣ Déploiement sur GitHub Pages
       - name: Deploy 🚀
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
-          publish_branch: gh-pages  # ✅ branche dédiée pour Pages
+          publish_branch: gh-pages  # ✅ crée et gère automatiquement cette branche
