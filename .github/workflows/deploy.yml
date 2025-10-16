@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write  # ✅ donne le droit au workflow d’écrire sur gh-pages
+      contents: write  # ✅ nécessaire pour pousser sur gh-pages
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # ✅ important
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
