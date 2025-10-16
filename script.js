@@ -889,9 +889,23 @@ function generation(retryCount = 0) {
   const allowMinPipsPerResource = document.getElementById("minPipsPerResourceRule").checked;
   const allowSameNumber = document.getElementById("sameNumberRule").checked;
 
-  // === Conteneur plateau ===
-  const plateau = document.getElementById("plateau-container");
-  plateau.innerHTML = "";
+// === Conteneur plateau ===
+const plateau = document.getElementById("plateau-container");
+if (!plateau) {
+  console.error("❌ Élément #plateau-container introuvable !");
+  return;
+}
+
+const scrollTop = window.scrollY;
+
+// 🔹 Vide l'ancien plateau sans provoquer de jump
+plateau.innerHTML = "";
+
+// ⚠️ Ne pas remettre plateau.innerHTML = nouveauPlateau;
+//    car c’est ta fonction qui reconstruit tout dynamiquement ensuite
+
+window.scrollTo(0, scrollTop); // 🔒 garde la position
+
 
   // 🔹 Recréation systématique des calques effacés
   const routesLayer = document.createElement("div");
