@@ -1862,41 +1862,38 @@ function demarrerGeneration(retryCount = 0) {
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
-  // Évite qu’un focus du bouton déclenche un auto-scroll
-  btn.blur?.();
-
   const originalText = btn.textContent;
   const lang = document.documentElement.lang || "fr";
   const startTime = performance.now();
+  const scrollTop = window.scrollY;
 
-  // 1) Gèle proprement la page (robuste iPhone/desktop)
-  lockScroll();
+  // 🔒 Gèle la position
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${scrollTop}px`;
+  document.body.style.width = "100%";
 
-  // 2) UI loading
   btn.disabled = true;
   btn.classList.add("loading");
   btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
 
-  // 3) Lance la génération dans la même “respiration”
-  //    (si génération est lourde en DOM, on laisse un micro-délai)
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     generation(retryCount);
 
-    // 4) Log & rétablissement
     const endTime = performance.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
     console.log(`✅ Génération terminée en ${duration}s`);
 
-    // Dé-gèle + restaure le scroll sans jump
-    unlockScroll();
+    // 🔓 Défige la position
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.width = "";
+    window.scrollTo(0, scrollTop);
 
-    // 5) UI back
     btn.disabled = false;
     btn.classList.remove("loading");
     btn.textContent = originalText;
-  });
+  }, 80);
 }
-
 
 
 
@@ -1927,45 +1924,3 @@ window.onload = () => {
     });
   }, 100);
 };
-
-
-
-function lockScroll() {
-  const se = document.scrollingElement || document.documentElement;
-  const y = se.scrollTop;
-
-  // Compense la disparition de la scrollbar sur desktop (évite tout shift horizontal)
-  const scrollbarW = window.innerWidth - document.documentElement.clientWidth;
-  if (scrollbarW > 0) document.body.style.paddingRight = `${scrollbarW}px`;
-
-  // Désactive le “scroll anchoring” pendant l’update
-  document.documentElement.style.setProperty('overflow-anchor', 'none');
-
-  // Gèle la page
-  document.body.dataset.scrollY = String(y);
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${y}px`;
-  document.body.style.width = '100%';
-
-  return y;
-}
-
-function unlockScroll() {
-  const y = parseInt(document.body.dataset.scrollY || '0', 10);
-
-  // Dé-gèle
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.width = '';
-  document.body.style.paddingRight = '';
-  delete document.body.dataset.scrollY;
-
-  // Restaure le scroll APRÈS stabilisation du layout (double rAF = clé anti “haut-bas”)
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.scrollTo(0, y);
-      // Rétablit l’anchoring
-      document.documentElement.style.removeProperty('overflow-anchor');
-    });
-  });
-}

@@ -2,13 +2,6 @@
   content: "\00A0:"; /* espace insécable + deux-points */
 }
 
-/* 💡 Empêche les flashs de repaint pendant la génération */
-.freeze-transitions, .freeze-transitions * {
-  transition: none !important;
-  animation: none !important;
-}
-
-
 /* ====== Variables globales ====== */
 :root {
   --hex-width: 14.5cqmin;                         /* largeur d’un hex (relative au plateau) */
@@ -381,8 +374,6 @@ input[type="radio"]:checked::after {
 }
 
 /* ====== Plateau ====== */
-#plateau { overflow-anchor: none; }  /* remplace #plateau par ton conteneur principal si besoin */
-
 #plateau-container {
   container-type: size;
 
