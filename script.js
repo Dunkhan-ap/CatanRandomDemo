@@ -1858,7 +1858,7 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // Elle gère l’état visuel du bouton (grisé + texte animé), attend un court
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
-function demarrerGeneration(retryCount = 0, isAuto = false) {
+function demarrerGeneration(retryCount = 0) {
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
@@ -1867,15 +1867,11 @@ function demarrerGeneration(retryCount = 0, isAuto = false) {
   // 🕓 Démarre le chronomètre haute précision
   const startTime = performance.now();
 
-  // Si c’est un clic manuel, affiche le “chargement”
-  if (!isAuto) {
     btn.disabled = true;
     btn.classList.add("loading");
 
     const lang = document.documentElement.lang || "fr";
     btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
-  }
-
 
   setTimeout(() => {
     generation(retryCount);
@@ -1889,11 +1885,9 @@ function demarrerGeneration(retryCount = 0, isAuto = false) {
       `✅ Génération terminée en ${duration}s`
     );
 
-    if (!isAuto) {
       btn.disabled = false;
       btn.classList.remove("loading");
       btn.textContent = originalText;
-    }
   }, 100);
 }
 
