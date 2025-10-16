@@ -1863,6 +1863,7 @@ function demarrerGeneration(e, retryCount = 0) {
   console.log("➡️ Type :", e.type);
   console.log("➡️ Cible :", e.target);
   console.log("➡️ Élément actif :", document.activeElement);
+  console.log(location.hash);
   if (e) e.preventDefault();
   
   const btn = document.getElementById("btn-generation");
@@ -1889,7 +1890,7 @@ function demarrerGeneration(e, retryCount = 0) {
     // 📜 Log clair en console
     console.log(
       `✅ Génération terminée en ${duration}s`
-    );
+    )
 
       btn.disabled = false;
       btn.classList.remove("loading");
