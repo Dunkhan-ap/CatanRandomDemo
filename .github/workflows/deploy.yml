@@ -10,6 +10,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write  # ✅ donne le droit au workflow d’écrire sur gh-pages
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,4 +35,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
-          publish_branch: gh-pages  # ✅ crée et gère automatiquement cette branche
+          publish_branch: gh-pages
