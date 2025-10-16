@@ -1859,40 +1859,40 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
 function demarrerGeneration(e, retryCount = 0) {
-  e.preventDefault();
-  e.stopPropagation();
-
+  console.log("🟢 demarrerGeneration appelée !");
+  if (e) e.preventDefault();
+  
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
-  // ⚠️ Important : retire le focus avant de désactiver
-  btn.blur();
-
   const originalText = btn.textContent;
+
+  // 🕓 Démarre le chronomètre haute précision
   const startTime = performance.now();
 
-  //btn.disabled = true;
-  btn.classList.add("loading");
+    btn.disabled = true;
+    btn.classList.add("loading");
 
-  const lang = document.documentElement.lang || "fr";
-  btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
+    const lang = document.documentElement.lang || "fr";
+    btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
 
   setTimeout(() => {
     generation(retryCount);
 
+    // 🧭 Fin du chronomètre
     const endTime = performance.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
-    console.log(`✅ Génération terminée en ${duration}s`);
 
-    //btn.disabled = false;
-    btn.classList.remove("loading");
-    btn.textContent = originalText;
+    // 📜 Log clair en console
+    console.log(
+      `✅ Génération terminée en ${duration}s`
+    );
 
-    // ✅ Redonne le focus proprement après réactivation
-    btn.focus({ preventScroll: true });
+      btn.disabled = false;
+      btn.classList.remove("loading");
+      btn.textContent = originalText;
   }, 100);
 }
-
 
 
 /********************

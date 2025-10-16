@@ -74,8 +74,6 @@ button.loading {
   color: #eee;
   cursor: wait;
   position: relative;
-  pointer-events: none;
-  opacity: 0.6;
 }
 
 html, body { 
