@@ -80,6 +80,8 @@ html, body {
   overscroll-behavior: contain; 
   scroll-behavior: auto !important;
   overflow-anchor: none; /* empêche Safari de "réancrer" la vue */
+  background-color: #000;
+  color-scheme: dark;
 }
 
 
