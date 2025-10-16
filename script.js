@@ -1871,7 +1871,7 @@ function demarrerGeneration(e, retryCount = 0) {
   // 🕓 Démarre le chronomètre haute précision
   const startTime = performance.now();
 
-    btn.disabled = true;
+    //btn.disabled = true;
     btn.classList.add("loading");
 
     const lang = document.documentElement.lang || "fr";
@@ -1889,7 +1889,7 @@ function demarrerGeneration(e, retryCount = 0) {
       `✅ Génération terminée en ${duration}s`
     );
 
-      btn.disabled = false;
+      //btn.disabled = false;
       btn.classList.remove("loading");
       btn.textContent = originalText;
   }, 100);
