@@ -1865,19 +1865,17 @@ function demarrerGeneration(retryCount = 0) {
   const originalText = btn.textContent;
   const lang = document.documentElement.lang || "fr";
   const startTime = performance.now();
+  const scrollTop = window.scrollY;
 
-  // 💾 Sauvegarde le scroll
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  // 🔒 Gèle la position
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${scrollTop}px`;
+  document.body.style.width = "100%";
 
-  // 🧊 Gèle les transitions pour éviter le flash
-  document.body.classList.add("freeze-transitions");
-
-  // 🔒 Bouton
   btn.disabled = true;
   btn.classList.add("loading");
   btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
 
-  // ⚙️ Génération
   setTimeout(() => {
     generation(retryCount);
 
@@ -1885,19 +1883,18 @@ function demarrerGeneration(retryCount = 0) {
     const duration = ((endTime - startTime) / 1000).toFixed(2);
     console.log(`✅ Génération terminée en ${duration}s`);
 
-    // 🩺 Restaure la position sans reflow visible
-    requestAnimationFrame(() => {
-      document.body.getBoundingClientRect(); // force layout stable
-      window.scrollTo(0, scrollTop);
-      document.body.classList.remove("freeze-transitions");
-    });
+    // 🔓 Défige la position
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.width = "";
+    window.scrollTo(0, scrollTop);
 
-    // 🔓 Bouton
     btn.disabled = false;
     btn.classList.remove("loading");
     btn.textContent = originalText;
   }, 80);
 }
+
 
 
 
