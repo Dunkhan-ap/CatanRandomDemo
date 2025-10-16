@@ -1,6 +1,3 @@
-# Fichiers et dossiers à ignorer
-node_modules/
-build/
-*.min.js
-*.min.css
-Catan_random_build_backup/
+# Ignorer tout sauf le dossier build
+*
+!/build/
