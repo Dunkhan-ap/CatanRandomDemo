@@ -1922,3 +1922,7 @@ window.onload = () => {
     });
   }, 100);
 };
+
+
+// Quand on clique sur le bouton "btn-generation", on lance la fonction demarrerGeneration
+document.getElementById("btn-generation").addEventListener("click", demarrerGeneration);
