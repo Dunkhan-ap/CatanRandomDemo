@@ -1858,8 +1858,9 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // Elle gère l’état visuel du bouton (grisé + texte animé), attend un court
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
-function demarrerGeneration(retryCount = 0) {
-  e.preventDefault();
+function demarrerGeneration(e, retryCount = 0) {
+  if (e) e.preventDefault();
+  
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 

@@ -84,7 +84,6 @@ button.loading {
 html, body { overscroll-behavior: contain; }
 
 
-
 /* ====== Classe utilitaire cachée ====== */
 .hidden {
   display: none !important;
