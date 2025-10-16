@@ -1919,4 +1919,20 @@ window.onload = () => {
 
 
 // Quand on clique sur le bouton "btn-generation", on lance la fonction demarrerGeneration
-document.getElementById("btn-generation").addEventListener("click", demarrerGeneration);
+const btn = document.getElementById("btn-generation");
+
+btn.style.touchAction = "manipulation"; // 👈 évite le scroll automatique iOS
+
+btn.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const currentScroll = window.scrollY;
+  setTimeout(() => event.target.blur(), 10);
+
+  demarrerGeneration();
+
+  setTimeout(() => {
+    window.scrollTo({ top: currentScroll, behavior: "instant" });
+  }, 50);
+});
+
