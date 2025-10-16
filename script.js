@@ -1858,14 +1858,8 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // Elle gère l’état visuel du bouton (grisé + texte animé), attend un court
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
-function demarrerGeneration(e, retryCount = 0) {
-  console.log("📦 Événement reçu :", e);
-  console.log("➡️ Type :", e.type);
-  console.log("➡️ Cible :", e.target);
-  console.log("➡️ Élément actif :", document.activeElement);
-  console.log(location.hash);
-  if (e) e.preventDefault();
-  
+function demarrerGeneration(e ,retryCount = 0) {
+  e.preventDefault()
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
@@ -1923,3 +1917,17 @@ window.onload = () => {
     });
   }, 100);
 };
+
+
+// Event listener for scroll
+window.addEventListener('scroll', function() {
+    let sections = document.querySelectorAll('section'); // Assuming each section is denoted with a <section> tag
+    for (let section of sections) {
+        let rect = section.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) { // Section is in the middle of the viewport
+            let sectionBackgroundColor = getComputedStyle(section).backgroundColor;
+            document.getElementById('themeMetaTag').setAttribute('content', sectionBackgroundColor);
+            break;
+        }
+    }
+});
