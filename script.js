@@ -1859,8 +1859,9 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
 function demarrerGeneration(e, retryCount = 0) {
-  console.log("🟢 demarrerGeneration appelée !");
   if (e) e.preventDefault();
+  e.stopPropagation();
+  e.target.blur(); // ← empêche Safari de refocus en haut
   
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
