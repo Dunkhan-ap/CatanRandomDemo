@@ -2,7 +2,7 @@
   "name": "catan_random",
   "version": "1.0.0",
   "description": "Générateur aléatoire de plateau Catan fan project",
-    "type": "module",        
+  "type": "module",
   "main": "lang.js",
   "scripts": {
     "build": "node build.js",
@@ -12,7 +12,9 @@
   "author": "Clément Fasquel",
   "license": "ISC",
   "dependencies": {
-    "clean-css-cli": "^5.6.3",
     "terser": "^5.44.0"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3"
   }
 }
