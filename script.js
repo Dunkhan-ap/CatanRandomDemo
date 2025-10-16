@@ -1864,12 +1864,13 @@ function demarrerGeneration(retryCount = 0) {
 
   const originalText = btn.textContent;
   const lang = document.documentElement.lang || "fr";
-
-  // 🕓 Chrono
   const startTime = performance.now();
 
-  // 💾 Position du scroll
+  // 💾 Sauvegarde le scroll
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+  // 🧊 Gèle les transitions pour éviter le flash
+  document.body.classList.add("freeze-transitions");
 
   // 🔒 Bouton
   btn.disabled = true;
@@ -1884,19 +1885,20 @@ function demarrerGeneration(retryCount = 0) {
     const duration = ((endTime - startTime) / 1000).toFixed(2);
     console.log(`✅ Génération terminée en ${duration}s`);
 
-    // 🧱 iPhone-safe scroll restore
-    setTimeout(() => {
-      // forcer recalcul avant de remonter
-      document.body.getBoundingClientRect();
-      window.scrollTo({ top: scrollTop, left: 0, behavior: "instant" });
-    }, 50);
+    // 🩺 Restaure la position sans reflow visible
+    requestAnimationFrame(() => {
+      document.body.getBoundingClientRect(); // force layout stable
+      window.scrollTo(0, scrollTop);
+      document.body.classList.remove("freeze-transitions");
+    });
 
     // 🔓 Bouton
     btn.disabled = false;
     btn.classList.remove("loading");
     btn.textContent = originalText;
-  }, 100);
+  }, 80);
 }
+
 
 
 

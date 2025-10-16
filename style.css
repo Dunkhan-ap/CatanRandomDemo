@@ -2,6 +2,13 @@
   content: "\00A0:"; /* espace insécable + deux-points */
 }
 
+/* 💡 Empêche les flashs de repaint pendant la génération */
+.freeze-transitions, .freeze-transitions * {
+  transition: none !important;
+  animation: none !important;
+}
+
+
 /* ====== Variables globales ====== */
 :root {
   --hex-width: 14.5cqmin;                         /* largeur d’un hex (relative au plateau) */
