@@ -889,23 +889,9 @@ function generation(retryCount = 0) {
   const allowMinPipsPerResource = document.getElementById("minPipsPerResourceRule").checked;
   const allowSameNumber = document.getElementById("sameNumberRule").checked;
 
-// === Conteneur plateau ===
-const plateau = document.getElementById("plateau-container");
-if (!plateau) {
-  console.error("❌ Élément #plateau-container introuvable !");
-  return;
-}
-
-const scrollTop = window.scrollY;
-
-// 🔹 Vide l'ancien plateau sans provoquer de jump
-plateau.innerHTML = "";
-
-// ⚠️ Ne pas remettre plateau.innerHTML = nouveauPlateau;
-//    car c’est ta fonction qui reconstruit tout dynamiquement ensuite
-
-window.scrollTo(0, scrollTop); // 🔒 garde la position
-
+  // === Conteneur plateau ===
+  const plateau = document.getElementById("plateau-container");
+  plateau.innerHTML = "";
 
   // 🔹 Recréation systématique des calques effacés
   const routesLayer = document.createElement("div");
@@ -1872,39 +1858,45 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // Elle gère l’état visuel du bouton (grisé + texte animé), attend un court
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
-function demarrerGeneration(e ,retryCount = 0) {
-  if (e && e.preventDefault) e.preventDefault(); // ✅ évite l'erreur
+function demarrerGeneration(retryCount = 0) {
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
   const originalText = btn.textContent;
+  const lang = document.documentElement.lang || "fr";
 
   // 🕓 Démarre le chronomètre haute précision
   const startTime = performance.now();
 
-    btn.disabled = true;
-    btn.classList.add("loading");
+  // 💾 Sauvegarde la position de scroll actuelle
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-    const lang = document.documentElement.lang || "fr";
-    btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
+  // 🔒 Désactive le bouton et met le texte "chargement"
+  btn.disabled = true;
+  btn.classList.add("loading");
+  btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
 
+  // ⚙️ Lance la génération après un léger délai
   setTimeout(() => {
     generation(retryCount);
 
     // 🧭 Fin du chronomètre
     const endTime = performance.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
+    console.log(`✅ Génération terminée en ${duration}s`);
 
-    // 📜 Log clair en console
-    console.log(
-      `✅ Génération terminée en ${duration}s`
-    )
+    // 🩺 Restaure la position de scroll sans saut visuel
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: scrollTop, behavior: "instant" });
+    });
 
-      btn.disabled = false;
-      btn.classList.remove("loading");
-      btn.textContent = originalText;
+    // 🔓 Réactive le bouton
+    btn.disabled = false;
+    btn.classList.remove("loading");
+    btn.textContent = originalText;
   }, 100);
 }
+
 
 
 /********************
@@ -1931,17 +1923,3 @@ window.onload = () => {
     });
   }, 100);
 };
-
-
-// Event listener for scroll
-window.addEventListener('scroll', function() {
-    let sections = document.querySelectorAll('section'); // Assuming each section is denoted with a <section> tag
-    for (let section of sections) {
-        let rect = section.getBoundingClientRect();
-        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) { // Section is in the middle of the viewport
-            let sectionBackgroundColor = getComputedStyle(section).backgroundColor;
-            document.getElementById('themeMetaTag').setAttribute('content', sectionBackgroundColor);
-            break;
-        }
-    }
-});

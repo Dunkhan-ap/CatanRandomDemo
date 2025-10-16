@@ -82,6 +82,7 @@ html, body {
   overflow-anchor: none; /* empêche Safari de "réancrer" la vue */
 }
 
+html { overflow-y: scroll; }
 
 /* ====== Classe utilitaire cachée ====== */
 .hidden {
