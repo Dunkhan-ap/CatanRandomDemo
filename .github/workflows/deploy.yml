@@ -3,28 +3,30 @@ name: 🚀 Build and Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # 🟢 Se déclenche à chaque push sur la branche principale
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Récupère le code
+      # 1️⃣ Récupérer le code
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # ✅ nécessaire pour gh-pages (sinon erreur exit code 128)
 
-      # 2️⃣ Installe Node.js
+      # 2️⃣ Installer Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22  # même version que ton PC
+          node-version: 22
 
-      # 3️⃣ Installe les dépendances
+      # 3️⃣ Installer les dépendances
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Build du projet (minification etc.)
+      # 4️⃣ Lancer le build
       - name: Run build
         run: npm run build
 
@@ -34,3 +36,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
+          publish_branch: gh-pages  # ✅ branche dédiée pour Pages
