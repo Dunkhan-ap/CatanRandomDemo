@@ -20,6 +20,7 @@ const i18n = {
     niv2: "Moyen",
     niv3: "Strict",
     bouton: "Génération",
+    boutonLoading: "Génération...",
     niveau: "Équilibrage",
     ratio: "Ratio",
     fan: "Projet de fans inspiré de Catan®. Non affilié ni approuvé par Catan GmbH ou Catan Studio."
@@ -44,6 +45,7 @@ const i18n = {
     niv2: "Medium",
     niv3: "Strict",
     bouton: "Generate",
+    boutonLoading: "Generating...",
     niveau: "Balancing",
     ratio: "Ratio",
     fan: "Fan project inspired by Catan®. Not affiliated with or endorsed by Catan GmbH or Catan Studio."
@@ -68,6 +70,7 @@ const i18n = {
     niv2: "Mittel",
     niv3: "Strikt",
     bouton: "Generieren",
+    boutonLoading: "Generierung...",
     niveau: "Ausgleich",
     ratio: "Verhältnis",
     fan: "Fanprojekt, inspiriert von Catan®. Nicht offiziell, nicht verbunden mit oder unterstützt von Catan GmbH oder Catan Studio."

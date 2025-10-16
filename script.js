@@ -1871,11 +1871,11 @@ function demarrerGeneration(retryCount = 0, isAuto = false) {
   if (!isAuto) {
     btn.disabled = true;
     btn.classList.add("loading");
-    btn.textContent =
-      document.documentElement.lang === "fr"
-        ? "Génération..."
-        : "Generating...";
+
+    const lang = document.documentElement.lang || "fr";
+    btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
   }
+
 
   setTimeout(() => {
     generation(retryCount);
