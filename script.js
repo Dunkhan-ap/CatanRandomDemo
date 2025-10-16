@@ -1859,6 +1859,7 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
 function demarrerGeneration(retryCount = 0) {
+  e.preventDefault();
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
@@ -1916,61 +1917,3 @@ window.onload = () => {
     });
   }, 100);
 };
-
-
-
-
-
-
-
-
-
-// Utilitaire : remonte la chaîne des parents et garde ceux qui scrollent
-function getScrollableAncestors(el) {
-  const out = [];
-  let p = el.parentElement;
-  while (p) {
-    const cs = getComputedStyle(p);
-    const oy = cs.overflowY;
-    if ((oy === "auto" || oy === "scroll") && p.scrollHeight > p.clientHeight) {
-      out.push(p);
-    }
-    p = p.parentElement;
-  }
-  return out;
-}
-
-const btn = document.getElementById("btn-generation");
-
-// iOS: évite les gestes parasites (zoom double-tap / recentrage)
-btn.style.touchAction = "manipulation";
-
-// Important sur iOS: empêcher le comportement par défaut dès touchstart
-btn.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-}, { passive: false });
-
-btn.addEventListener("click", (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-
-  // 1) Mémorise la position de la page ET des conteneurs scrollables
-  const winY = window.pageYOffset || document.documentElement.scrollTop || 0;
-  const ancestors = getScrollableAncestors(btn);
-  const positions = ancestors.map(a => a.scrollTop);
-
-  // 2) Lance ta génération
-  demarrerGeneration();
-
-  // 3) Restaure immédiatement les positions (iOS recentre souvent après le clic)
-  //    On le fait au prochain tick pour laisser iOS finir son "recentrage"
-  setTimeout(() => {
-    window.scrollTo(0, winY);
-    ancestors.forEach((a, i) => { a.scrollTop = positions[i]; });
-    // Retire le focus pour éviter un nouveau recentrage
-    if (document.activeElement === btn) btn.blur();
-  }, 0);
-});
-
-
