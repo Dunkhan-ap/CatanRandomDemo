@@ -1859,7 +1859,7 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
 function demarrerGeneration(e ,retryCount = 0) {
-  e.preventDefault()
+  if (e && e.preventDefault) e.preventDefault(); // ✅ évite l'erreur
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
