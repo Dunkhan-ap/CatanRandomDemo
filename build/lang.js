@@ -1,6 +1,7 @@
 // === 🌐 Dictionnaire des traductions ===
 const i18n = {
   fr: {
+    pageTitle: "Générateur Catan",
     titre: "Générateur Catan",
     options: "Options :",
     nombre: "Nombre",
@@ -26,6 +27,7 @@ const i18n = {
     fan: "Projet de fans inspiré de Catan®. Non affilié ni approuvé par Catan GmbH ou Catan Studio."
   },
   en: {
+    pageTitle: "Catan Generator",
     titre: "Catan Generator",
     options: "Options:",
     nombre: "Number",
@@ -51,6 +53,7 @@ const i18n = {
     fan: "Fan project inspired by Catan®. Not affiliated with or endorsed by Catan GmbH or Catan Studio."
   },
   de: {
+    pageTitle: "Catan-Generator",
     titre: "Catan-Generator",
     options: "Optionen:",
     nombre: "Zahl",
@@ -81,6 +84,10 @@ const i18n = {
 // === 🧩 Fonction principale de traduction ===
 function appliquerTraduction(lang) {
   document.documentElement.lang = lang;
+
+  if (i18n[lang]?.pageTitle) {
+    document.title = i18n[lang].pageTitle;
+  }
 
   // ✅ Traduit les éléments avec data-i18n
   document.querySelectorAll("[data-i18n]").forEach(el => {
