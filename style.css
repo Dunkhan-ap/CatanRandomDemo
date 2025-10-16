@@ -76,11 +76,6 @@ button.loading {
   position: relative;
 }
 
-#btn-generation { touch-action: manipulation; }
-.scrollable-content {
-  -webkit-overflow-scrolling: touch; /* iOS inertial scroll */
-  overscroll-behavior: contain;      /* évite propagation des scrolls */
-}
 html, body { overscroll-behavior: contain; }
 
 
