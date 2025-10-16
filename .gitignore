@@ -1,3 +1,17 @@
-# Ignorer tout sauf le dossier build
-*
+# Ignorer le dossier node_modules (inutile sur GitHub)
+node_modules/
+
+# Ignorer les fichiers temporaires et logs
+*.log
+*.tmp
+
+# Ignorer le dossier de cache npm
+.npm/
+
+# Ignorer les fichiers système
+.DS_Store
+Thumbs.db
+
+# Ne PAS ignorer les dossiers importants
+!/.github/
 !/build/

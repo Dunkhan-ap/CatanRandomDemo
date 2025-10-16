@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catan Random</title>
+  <link rel="icon" type="image/png" href="image/fondDEcran.png">
+  <link rel="stylesheet" href="style.min.css">
+  <script defer src="lang.js"></script>
+  <script defer src="script.min.js"></script>
+</head>
+
+<body class="invisible">
+  <!-- 🌍 Sélecteur de langue -->
+  <div id="lang-switch">
+    <button data-lang="fr" class="active" title="Français">
+      <img src="image/flags/fr.svg" alt="Français">
+    </button>
+    <button data-lang="en" title="English">
+      <img src="image/flags/gb.svg" alt="English">
+    </button>
+  </div>
+
+  <div class="main-container">
+    
+    <!-- 🟦 Bloc supérieur (titre + options + analyse) -->
+    <div class="top-block">
+
+      <!-- === Titres === -->
+      <div class="titre">
+        <h1 data-i18n="titre">Générateur Catan</h1>
+        <h2 data-i18n="options">Options :</h2>
+      </div>
+
+      <!-- 🔹 Partie défilable uniquement en mode portrait -->
+      <div class="scrollable-content">
+
+        <!-- Bloc Options -->
+        <div class="options-container">
+
+          <!-- ✅ Options principales -->
+          <div class="checkboxes zone-texte">
+            <label><input type="checkbox" id="nombre" checked> <span data-i18n="nombre">Nombre</span></label>
+            <label><input type="checkbox" id="mer" checked> <span data-i18n="mer">Mer</span></label>
+            <label><input type="checkbox" id="colonie" checked> <span data-i18n="colonie">Colonie</span></label>
+            <label><input type="checkbox" id="route" checked> <span data-i18n="route">Route</span></label>
+            <br>
+            <label><input type="checkbox" id="desertCentre"> <span data-i18n="desert">Forcer le désert au centre</span></label>
+            <label><input type="checkbox" id="sameResRule"> <span data-i18n="sameRes">Même ressources peuvent se toucher</span></label>
+            <label><input type="checkbox" id="sameNumberRule"> <span data-i18n="sameNum">Même nombres peuvent se toucher</span></label>
+            <label><input type="checkbox" id="sixhuit"> <span data-i18n="sixhuit">6 et 8 peuvent se toucher</span></label>
+            <label><input type="checkbox" id="deuxdouze"> <span data-i18n="deuxdouze">2 et 12 peuvent se toucher</span></label>
+            <label><input type="checkbox" id="ressourceRule"> <span data-i18n="resRule">2 et 12 peuvent être sur la même ressource</span></label>
+            <br>
+            <label><input type="checkbox" id="portRule" checked> <span data-i18n="portRule">Ports équilibrés (Pas de ressource forte (6 ou 8) adjacente à son port 2:1)</span></label>
+            <label><input type="checkbox" id="equilibreRule" checked> <span data-i18n="equilibre">Équilibre global des points de probabilité (7-11 autour de chaque sommet)</span></label>
+            <label><input type="checkbox" id="minPipsPerResourceRule" checked> <span data-i18n="minRes">Somme mini par ressource (11 pour bois/blé/mouton, 9 pour argile/minerai)</span></label>
+          </div>
+
+          <!-- ✅ Niveaux -->
+          <div class="zone-niveaux">
+            <span style="margin-right: 1vmin; font-weight: bold;" data-i18n="niveau" class="label-colon">Niveau</span>
+            <label><input type="radio" name="niveauEquilibre" value="1" checked> <span data-i18n="niv1">Aléatoire</span></label>
+            <label><input type="radio" name="niveauEquilibre" value="2"> <span data-i18n="niv2">Moyen</span></label>
+            <label><input type="radio" name="niveauEquilibre" value="3"> <span data-i18n="niv3">Strict</span></label>
+          </div>
+
+          <!-- ✅ Pions -->
+          <div class="zone-couleurs">
+            <label><input type="checkbox" id="Rouge" checked><img src="image/pion/Crouge.png" alt="Colonie rouge"></label>
+            <label><input type="checkbox" id="Bleu" checked><img src="image/pion/Cbleu.png" alt="Colonie bleue"></label>
+            <label><input type="checkbox" id="Orange" checked><img src="image/pion/Corange.png" alt="Colonie orange"></label>
+            <label><input type="checkbox" id="Beige" checked><img src="image/pion/Cbeige.png" alt="Colonie beige"></label>
+          </div>
+
+          <!-- ✅ Bouton -->
+          <div class="bouton">
+            <button id="btn-generation" onclick="demarrerGeneration()" data-i18n="bouton">Génération</button>
+          </div>
+
+          <!-- 📊 Bloc d’analyse final -->
+          <div id="analyse-bar" class="hidden">
+            <div id="niveau-badge" class="badge" data-i18n="niveau" data-i18n-keep-value="true">Niveau :</div>
+            <div id="ratio-badge" class="badge" data-i18n="ratio" data-i18n-keep-value="true">Ratio :</div>
+            <div id="scores-strip" class="scores-strip"></div>
+          </div>
+
+        </div> <!-- fin options-container -->
+      </div> <!-- fin scrollable-content -->
+    </div> <!-- fin top-block -->
+
+    <!-- 🟩 Bloc inférieur (plateau + badge) -->
+    <div class="bottom-block">
+      <div id="plateau-container">
+        <div class="hex-fond hex-mer"></div>
+        <div class="hex-fond hex-route"></div>
+        <div id="carteCatan"></div>
+        <div class="bord-layer"></div>
+        <div id="routes-layer"></div>
+        <div id="colonies-layer"></div>
+      </div>
+
+      <div class="fan-badge">
+        Fan project inspired by Catan®. Not affiliated with or endorsed by Catan GmbH or Catan Studio.
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
