@@ -1865,37 +1865,39 @@ function demarrerGeneration(retryCount = 0) {
   const originalText = btn.textContent;
   const lang = document.documentElement.lang || "fr";
 
-  // 🕓 Démarre le chronomètre haute précision
+  // 🕓 Chrono
   const startTime = performance.now();
 
-  // 💾 Sauvegarde la position de scroll actuelle
+  // 💾 Position du scroll
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-  // 🔒 Désactive le bouton et met le texte "chargement"
+  // 🔒 Bouton
   btn.disabled = true;
   btn.classList.add("loading");
   btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
 
-  // ⚙️ Lance la génération après un léger délai
+  // ⚙️ Génération
   setTimeout(() => {
     generation(retryCount);
 
-    // 🧭 Fin du chronomètre
     const endTime = performance.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
     console.log(`✅ Génération terminée en ${duration}s`);
 
-    // 🩺 Restaure la position de scroll sans saut visuel
-    requestAnimationFrame(() => {
-      window.scrollTo({ top: scrollTop, behavior: "instant" });
-    });
+    // 🧱 iPhone-safe scroll restore
+    setTimeout(() => {
+      // forcer recalcul avant de remonter
+      document.body.getBoundingClientRect();
+      window.scrollTo({ top: scrollTop, left: 0, behavior: "instant" });
+    }, 50);
 
-    // 🔓 Réactive le bouton
+    // 🔓 Bouton
     btn.disabled = false;
     btn.classList.remove("loading");
     btn.textContent = originalText;
   }, 100);
 }
+
 
 
 
