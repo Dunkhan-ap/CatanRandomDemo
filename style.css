@@ -1,8 +1,3 @@
-body.invisible {
-  opacity: 0;
-  visibility: hidden;
-}
-
 .label-colon::after {
   content: "\00A0:"; /* espace insécable + deux-points */
 }
@@ -41,6 +36,11 @@ body {
   transition: opacity 0.3s ease-in-out;
 }
 
+body.invisible {
+  opacity: 0;
+  visibility: hidden;
+}
+
 h1 { font-size: 4vmin; font-weight: bold; color: #ffffff; }
 h2 { font-size: 3vmin; color: #ffffff; }
 label { font-size: 2vmin; color: #ffffff; }
@@ -74,6 +74,13 @@ button.loading {
   color: #eee;
   cursor: wait;
   position: relative;
+}
+
+button:focus {
+  outline: none;
+}
+button:focus-visible {
+  outline: none;
 }
 
 /* ====== Classe utilitaire cachée ====== */
@@ -753,13 +760,3 @@ input[type="radio"]:checked::after {
   }
 }
 
-
-body {
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-}
-
-body.invisible {
-  opacity: 0;
-  visibility: hidden;
-}
