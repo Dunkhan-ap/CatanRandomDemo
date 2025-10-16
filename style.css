@@ -676,14 +676,18 @@ input[type="radio"]:checked::after {
 }
 
 #lang-switch img {
-  width: clamp(32px, 5vmin, 60px);   /* largeur mini 32px, max 60px */
-  height: auto;                      /* conserve le ratio 3:2 du drapeau */
-  aspect-ratio: 3 / 2;               /* sécurité pour les navigateurs modernes */
-  border-radius: 0.8vmin;            /* coins légèrement arrondis */
+  width: clamp(32px, 5vmin, 60px);
+  height: auto;
+  aspect-ratio: 3 / 2;
+  border-radius: 0.8vmin;
   border: 0.15vmin solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 0 0.6vmin rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease, opacity 0.2s ease;
+  object-fit: cover;          /* remplit complètement la zone */
+  object-position: center;    /* centré parfaitement */
+  display: block;             /* supprime les petits espaces inline */
 }
+
 
 
 

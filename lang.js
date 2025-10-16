@@ -21,11 +21,12 @@ const i18n = {
     niv3: "Strict",
     bouton: "Génération",
     niveau: "Équilibrage",
-    ratio: "Ratio"
+    ratio: "Ratio",
+    fan: "Projet de fans inspiré de Catan®. Non affilié ni approuvé par Catan GmbH ou Catan Studio."
   },
   en: {
     titre: "Catan Generator",
-    options: "Options :",
+    options: "Options:",
     nombre: "Number",
     mer: "Sea",
     colonie: "Settlement",
@@ -44,54 +45,103 @@ const i18n = {
     niv3: "Strict",
     bouton: "Generate",
     niveau: "Balancing",
-    ratio: "Ratio"
+    ratio: "Ratio",
+    fan: "Fan project inspired by Catan®. Not affiliated with or endorsed by Catan GmbH or Catan Studio."
+  },
+  de: {
+    titre: "Catan-Generator",
+    options: "Optionen:",
+    nombre: "Zahl",
+    mer: "Meer",
+    colonie: "Siedlung",
+    route: "Straße",
+    desert: "Wüste in der Mitte erzwingen",
+    sameRes: "Gleiche Ressourcen dürfen sich berühren",
+    sameNum: "Gleiche Zahlen dürfen sich berühren",
+    sixhuit: "6 und 8 dürfen sich berühren",
+    deuxdouze: "2 und 12 dürfen sich berühren",
+    resRule: "2 und 12 dürfen auf derselben Ressource liegen",
+    portRule: "Ausgeglichene Häfen (Keine starke Ressource (6 oder 8) neben ihrem 2:1-Hafen)",
+    equilibre: "Globales Gleichgewicht der Wahrscheinlichkeiten (7-11 um jeden Schnittpunkt)",
+    minRes: "Mindestsumme pro Ressource (11 für Holz/Weizen/Schaf, 9 für Lehm/Erz)",
+    niv1: "Zufällig",
+    niv2: "Mittel",
+    niv3: "Strikt",
+    bouton: "Generieren",
+    niveau: "Ausgleich",
+    ratio: "Verhältnis",
+    fan: "Fanprojekt, inspiriert von Catan®. Nicht offiziell, nicht verbunden mit oder unterstützt von Catan GmbH oder Catan Studio."
   }
 };
 
+
 // === 🧩 Fonction principale de traduction ===
 function appliquerTraduction(lang) {
-  // ✅ Met à jour la langue dans <html lang="...">
   document.documentElement.lang = lang;
 
-  // ✅ Traduit tous les éléments marqués data-i18n
+  // ✅ Traduit les éléments avec data-i18n
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.dataset.i18n;
     if (!key) return;
+    const trad = i18n[lang]?.[key];
+    if (!trad) return;
 
-    const traduction = i18n[lang]?.[key];
-    if (!traduction) return;
-
-    // 🔹 Si on doit garder la partie après les deux-points (ex: "Niveau : Medium")
     if (el.dataset.i18nKeepValue === "true" && el.textContent.includes(":")) {
-      const [avant, apres] = el.textContent.split(/:(.*)/s); // garde tout après le premier :
-      el.textContent = `${traduction}:${apres}`;
+      const [avant, apres] = el.textContent.split(/:(.*)/s);
+      el.textContent = `${trad}:${apres}`;
     } else {
-      el.textContent = traduction;
+      el.textContent = trad;
     }
   });
 
-  // ✅ Met à jour le texte du loader
+  // ✅ Loader
   const loader = document.getElementById("loading-indicator");
-  if (loader) {
-    loader.textContent = i18n[lang]?.loading ?? "🌀 Loading...";
-  }
+  if (loader) loader.textContent = i18n[lang]?.loading ?? "🌀 Loading...";
 
-  // ✅ Met à jour le sélecteur visuel 🇫🇷 / 🇬🇧
+  // ✅ Sélecteur visuel 🇫🇷/🇬🇧/🇩🇪
   document.querySelectorAll("#lang-switch button").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.lang === lang);
   });
+
+  // 🟢 NOUVEAUTÉ : rafraîchit les badges d’analyse si déjà affichés
+  const niveauBadge = document.getElementById("niveau-badge");
+  const ratioBadge = document.getElementById("ratio-badge");
+
+  if (niveauBadge && !niveauBadge.classList.contains("hidden")) {
+    const niv = window.seuilsActuels?.nom ?? 1;
+    const libNiv = i18n[lang]?.[`niv${niv}`] ?? i18n.fr?.[`niv${niv}`] ?? niv;
+    niveauBadge.textContent = `${i18n[lang]?.niveau ?? "Équilibrage"} : ${libNiv}`;
+  }
+
+  if (ratioBadge && !ratioBadge.classList.contains("hidden")) {
+    const ratio = window.dernierRatio ?? 1;
+    const ratioCap = window.dernierRatioCap ?? 1;
+    ratioBadge.textContent = `${i18n[lang]?.ratio ?? "Ratio"} : ${ratio.toFixed(2)} (≤ ${ratioCap.toFixed(2)})`;
+  }
 }
+
 
 // === 🚀 Initialisation automatique au chargement ===
 document.addEventListener("DOMContentLoaded", () => {
-  // 🌍 Détection de la langue initiale du navigateur
-  let currentLang = navigator.language.startsWith("fr") ? "fr" : "en";
+  // 🌍 Détection de la langue initiale
+  let currentLang;
+  const savedLang = localStorage.getItem("langueCatan");
+  if (savedLang) {
+    currentLang = savedLang;
+  } else {
+    const browserLang = navigator.language;
+    if (browserLang.startsWith("fr")) currentLang = "fr";
+    else if (browserLang.startsWith("de")) currentLang = "de";
+    else currentLang = "en";
+  }
+
   appliquerTraduction(currentLang);
 
-  // 🔁 Gestion du changement de langue par clic
+  // 🔁 Gestion du changement de langue
   document.querySelectorAll("#lang-switch button").forEach(btn => {
     btn.addEventListener("click", () => {
       currentLang = btn.dataset.lang;
+      localStorage.setItem("langueCatan", currentLang);
       appliquerTraduction(currentLang);
     });
   });
@@ -99,8 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🩹 Rétablit l'état initial du bandeau d'analyse
   document.getElementById("analyse-bar")?.classList.add("hidden");
 });
-
-
 
 // === 💾 Sauvegarde automatique des préférences ===
 document.addEventListener("DOMContentLoaded", () => {
@@ -118,14 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (radio) radio.checked = true;
   }
 
-  // --- 3) Restaurer la langue ---
-  const savedLang = localStorage.getItem("langueCatan");
-  if (savedLang) {
-    document.documentElement.lang = savedLang;
-    appliquerTraduction(savedLang);
-  }
-
-  // --- 4) Écouter les checkboxes et les sauver (par id) ---
+  // --- 3) Écouter les checkboxes et les sauver ---
   document.querySelectorAll('input[type="checkbox"][id]').forEach(input => {
     input.addEventListener("change", () => {
       const prefs = JSON.parse(localStorage.getItem("prefsCatan") || "{}");
@@ -134,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // --- 5) Écouter le groupe de niveau et sauver la valeur choisie ---
+  // --- 4) Écouter le groupe de niveau ---
   document.querySelectorAll('input[name="niveauEquilibre"]').forEach(radio => {
     radio.addEventListener("change", (e) => {
       if (e.target.checked) {
@@ -143,14 +184,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // --- 6) Sauver la langue quand on clique un drapeau ---
-  document.querySelectorAll("#lang-switch button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const lang = btn.dataset.lang;
-      localStorage.setItem("langueCatan", lang);
-    });
-  });
-
   document.body.classList.remove("invisible");
 });
-

@@ -1055,7 +1055,7 @@ function getSeuilsEquilibrage(niveau) {
 
     case 1: // 🎲 Random — aucun équilibrage, tout passe
       return {
-        nom: "Random",
+        nom: 1,
         ressourcesTotales: 0,
         ressourcesDistinctes: 0,
         ressourcesParPion: 0,
@@ -1067,7 +1067,7 @@ function getSeuilsEquilibrage(niveau) {
 
     case 2: // 🔸 Medium — équilibrage standard, tolérance moyenne
       return {
-        nom: "Medium",
+        nom: 2,
         ressourcesTotales: 4,     // total ressources + ports (2 pions)
         ressourcesDistinctes: 2,  // mini 2 ressources distinctes
         ressourcesParPion: 1,     // mini 1 ressource utile par pion
@@ -1079,7 +1079,7 @@ function getSeuilsEquilibrage(niveau) {
 
     case 3: // 🔺 Strict — génération très équilibrée
       return {
-        nom: "Strict",
+        nom: 3,
         ressourcesTotales: 5,
         ressourcesDistinctes: 3,
         ressourcesParPion: 2,
@@ -1805,46 +1805,23 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
     "fr";
 
   // Détermine le libellé du niveau selon la langue
-  const libNiv = (() => {
-    const map = {
-      fr: {
-        "1": "Aléatoire",
-        "2": "Moyen",
-        "3": "Strict",
-        "Random": "Aléatoire",
-        "Medium": "Moyen",
-        "Strict": "Strict",
-      },
-      en: {
-        "1": "Random",
-        "2": "Medium",
-        "3": "Strict",
-        "Aléatoire": "Random",
-        "Moyen": "Medium",
-        "Strict": "Strict",
-      },
-    };
+  const libNiv = i18n[currentLang]?.[`niv${niveau}`] 
+              ?? i18n.fr?.[`niv${niveau}`] 
+              ?? niveau;
 
-    const lang = map[currentLang] ? currentLang : "fr";
-    return map[lang][String(niveau)] ?? niveau;
-  })();
 
   // Met à jour les badges
   const niveauBadge = document.getElementById("niveau-badge");
   const ratioBadge = document.getElementById("ratio-badge");
   if (!niveauBadge || !ratioBadge) return;
 
-  niveauBadge.textContent =
-    (currentLang === "fr" ? "Équilibrage" : "Balancing") + " : " + libNiv;
+  // --- Badges traduits via i18n ---
+  const niveauLabel = i18n[currentLang]?.niveau ?? "Balancing";
+  const ratioLabel = i18n[currentLang]?.ratio ?? "Ratio";
 
+  niveauBadge.textContent = `${niveauLabel} : ${libNiv}`;
+  ratioBadge.textContent = `${ratioLabel} : ${ratio.toFixed(2)} (≤ ${ratioCap.toFixed(2)})`;
 
-  ratioBadge.textContent =
-    (currentLang === "fr" ? "Ratio" : "Ratio") +
-    " : " +
-    ratio.toFixed(2) +
-    " (≤ " +
-    ratioCap.toFixed(2) +
-    ")";
 
   ratioBadge.classList.remove("badge-ok", "badge-warn", "badge-danger");
   ratioBadge.classList.add(
@@ -1909,7 +1886,7 @@ function demarrerGeneration(retryCount = 0, isAuto = false) {
 
     // 📜 Log clair en console
     console.log(
-      `✅ Génération terminée en ${duration}s (${isAuto ? "auto" : "manuel"})`
+      `✅ Génération terminée en ${duration}s`
     );
 
     if (!isAuto) {
