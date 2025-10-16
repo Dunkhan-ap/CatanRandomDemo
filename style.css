@@ -381,6 +381,8 @@ input[type="radio"]:checked::after {
 }
 
 /* ====== Plateau ====== */
+#plateau { overflow-anchor: none; }  /* remplace #plateau par ton conteneur principal si besoin */
+
 #plateau-container {
   container-type: size;
 
