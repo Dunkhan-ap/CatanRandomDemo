@@ -1,1 +1,36 @@
-t
+name: 🚀 Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # 🟢 Se déclenche à chaque push sur la branche principale
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Récupère le code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Installe Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22  # même version que ton PC
+
+      # 3️⃣ Installe les dépendances
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Build du projet (minification etc.)
+      - name: Run build
+        run: npm run build
+
+      # 5️⃣ Déploiement sur GitHub Pages
+      - name: Deploy 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
