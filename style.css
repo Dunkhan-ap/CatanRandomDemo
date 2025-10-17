@@ -373,6 +373,16 @@ input[type="radio"]:checked::after {
   margin-top: 1vmin;
 }
 
+/* Stabilisateur invisible */
+#keep-alive {
+  position: absolute;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(255, 0, 0, 0.3); /* visible pour test */
+  pointer-events: none;
+}
+
+
+
 /* ====== Plateau ====== */
 #plateau-container {
   container-type: size;

@@ -891,7 +891,15 @@ function generation(retryCount = 0) {
 
   // === Conteneur plateau ===
   const plateau = document.getElementById("plateau-container");
-  plateau.innerHTML = "";
+  const keepAlive = document.getElementById("keep-alive");
+
+  // Crée une liste temporaire pour éviter les erreurs de parcours
+  const toRemove = [];
+  for (const child of plateau.children) {
+    if (child !== keepAlive) toRemove.push(child);
+  }
+  toRemove.forEach(el => el.remove());
+
 
   // 🔹 Recréation systématique des calques effacés
   const routesLayer = document.createElement("div");
@@ -1865,35 +1873,28 @@ function demarrerGeneration(retryCount = 0) {
   const originalText = btn.textContent;
   const lang = document.documentElement.lang || "fr";
   const startTime = performance.now();
-  const scrollTop = window.scrollY;
 
-  // 🔒 Gèle la position
-  document.body.style.position = "fixed";
-  document.body.style.top = `-${scrollTop}px`;
-  document.body.style.width = "100%";
-
+  // 🔹 Désactive le bouton pendant la génération
   btn.disabled = true;
   btn.classList.add("loading");
   btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
 
+  // ⚙️ Lance la génération après un léger délai
   setTimeout(() => {
     generation(retryCount);
 
+    // 🧭 Fin du chronomètre
     const endTime = performance.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
     console.log(`✅ Génération terminée en ${duration}s`);
 
-    // 🔓 Défige la position
-    document.body.style.position = "";
-    document.body.style.top = "";
-    document.body.style.width = "";
-    window.scrollTo(0, scrollTop);
-
+    // 🔓 Réactive le bouton
     btn.disabled = false;
     btn.classList.remove("loading");
     btn.textContent = originalText;
   }, 80);
 }
+
 
 
 
