@@ -1791,8 +1791,7 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
   const analyseBar = document.getElementById("analyse-bar");
   if (!analyseBar) return;
 
-  // Cache systématiquement au début
-  analyseBar.classList.add("hidden");
+  
 
   // Vérifie si les options "Colonie" et "Nombre" sont cochées
   const colonieChecked = document.getElementById("colonie")?.checked ?? false;
@@ -1804,8 +1803,11 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
     .map(c => c.toLowerCase());
 
   // Si aucune colonie ou couleur → on sort sans rien faire
-  if (!colonieChecked || !nombreChecked ||  couleursActives.length === 0) return;
-
+  if (!colonieChecked || !nombreChecked ||  couleursActives.length === 0) {
+    // Cache
+    analyseBar.classList.add("hidden");
+    return;
+  }
   // Détecte la langue courante
   const currentLang =
     document.documentElement.lang ||
