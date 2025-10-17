@@ -200,8 +200,24 @@ input[type="radio"]:checked::after {
 }
 
 #analyse-wrapper:not(.empty) {
-  height: 20svh; 
+  height: clamp(90px, 23vw, 160px);
 }
+
+/* Tablettes (iPad, écrans moyens) */
+@media (min-aspect-ratio: 4/3) {
+  #analyse-wrapper:not(.empty) {
+    height: clamp(80px, 16vw, 150px);
+  }
+}
+
+/* Ordinateurs portables et grands écrans */
+@media (min-aspect-ratio: 16/10) {
+  #analyse-wrapper:not(.empty) {
+    height: clamp(70px, 15vw, 140px);
+  }
+}
+
+
 
 /* Barre cachée */
 #analyse-wrapper.empty {
