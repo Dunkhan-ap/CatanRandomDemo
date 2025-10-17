@@ -200,7 +200,7 @@ input[type="radio"]:checked::after {
 }
 
 #analyse-wrapper:not(.empty) {
-  height: 15vmin; 
+  height: 10svh; 
 }
 
 /* Barre cachée */
