@@ -1557,15 +1557,26 @@ function analysePositionJoueur(pionsJoueur, tousLesPions, couleurJoueur = "incon
     couleurJoueur === "orange" ? "orange" :
     couleurJoueur === "beige"  ? "#c2a572" : "white";
 
-  // --- Ressources du joueur ---
+ // --- Ressources du joueur ---
+  // Set : quelles ressources le joueur touche déjà avec ses deux pions
   const ressourcesPossedees = new Set();
-  for (const p of pionsJoueur)
-    (vertexData[p]?.hexes || []).forEach(h => {
-      if (h.res && h.res !== "desert") ressourcesPossedees.add(h.res);
-    });
+  // Map : pips bruts possédés par ressource (sur les 2 pions)
+  const pipsPossedesParRessource = { argile:0, bois:0, ble:0, pierre:0, minerai:0, mouton:0 };
+
+  for (const p of pionsJoueur) {
+    const hexesPion = vertexData[p]?.hexes || [];
+    for (const h of hexesPion) {
+      if (!h || !h.res || h.res === "desert" || !h.num || isNaN(h.num)) continue;
+      const pips = PROB_POINTS[h.num] || 0;
+      ressourcesPossedees.add(h.res);
+      if (h.res in pipsPossedesParRessource) {
+        pipsPossedesParRessource[h.res] += pips;
+      }
+    }
+  }
 
   // --- Fonction de qualité ---
-  function qualiteSommet(id) {
+  function qualiteSommet(id, estPionActuel = false) {
     const hexes = vertexData[id]?.hexes || [];
     const ports = vertexData[id]?.ports || [];
     let total = 0;
@@ -1587,18 +1598,31 @@ function analysePositionJoueur(pionsJoueur, tousLesPions, couleurJoueur = "incon
         logParts.push(`⚓ port 3:1 → +3 pts`);
       } else {
         const res = p;
-        const possede = ressourcesPossedees.has(res);
-        const pipsAdj = hexes
-          .filter(h => h.res === res && h.num && !isNaN(h.num))
-          .reduce((a, h) => a + (PROB_POINTS[h.num] || 0), 0);
-        const val = possede || pipsAdj > 0 ? 1.5 + 0.6 * pipsAdj : 1;
+
+        // 🔹 Pips possédés sur les 2 pions
+        const pipsPossedes = pipsPossedesParRessource[res] ?? 0;
+
+        // 🔹 Pips adjacents au sommet candidat (uniquement si ce n’est pas le pion actuel)
+        const pipsAdj = estPionActuel
+          ? 0
+          : (hexes.filter(h => h && h.res === res && h.num && !isNaN(h.num))
+                  .reduce((a, h) => a + (PROB_POINTS[h.num] || 0), 0));
+
+        const pipsTotal = pipsPossedes + pipsAdj;
+        const synergique = pipsTotal > 0;
+        const val = synergique ? (1.5 + 0.6 * pipsTotal) : 1.0;
         total += val;
-        logParts.push(`⚓ port ${res} ${(possede || pipsAdj > 0) ? "synergique" : "non-synergique"} → +${val.toFixed(2)} pts`);
+
+        logParts.push(
+          `⚓ port ${res} ${synergique ? "synergique" : "non-synergique"} → ` +
+          `possédé=${pipsPossedes}, adjacent=${pipsAdj}, total=${pipsTotal} → +${val.toFixed(2)} pts`
+        );
       }
     }
 
     return { total, logParts };
   }
+
 
   // --- Vérifie si un sommet est libre ---
   function estAccessible(id) {
@@ -1688,10 +1712,24 @@ function analysePositionJoueur(pionsJoueur, tousLesPions, couleurJoueur = "incon
       couleurJoueur === "beige"  ? "⚪"  : "⚫";
 
     console.groupCollapsed(
-      `%c${emojiCouleur} Joueur ${couleurJoueur.toUpperCase()} — ${pionsJoueur.join(", ")}`,
+      `%c${emojiCouleur} Joueur ${couleurJoueur.toUpperCase()} — Pions: ${pionsJoueur.join(", ")}`,
       `color:${colorStyle}; font-weight:bold;`
     );
+
+    // 🔹 Log direct des ressources possédées (intégré au header du joueur)
+    console.groupCollapsed(`%c🧾 Ressources déjà possédées`, "color:gold;");
+    const listePossedees = Array.from(ressourcesPossedees);
+    if (listePossedees.length === 0) {
+      console.log("Aucune ressource pour le moment.");
+    } else {
+      console.log("Ressources touchées :", listePossedees.join(", "));
+      Object.entries(pipsPossedesParRessource).forEach(([r, v]) => {
+        if (v > 0) console.log(`  ↳ ${r} : ${v} pips`);
+      });
+    }
+    console.groupEnd();
   }
+
 
 
   // === Parcours des pions ===
@@ -1721,7 +1759,8 @@ function analysePositionJoueur(pionsJoueur, tousLesPions, couleurJoueur = "incon
     }
 
     // --- Qualité du pion actuel ---
-    const { total: qPion, logParts: lPion } = qualiteSommet(pion);
+    const { total: qPion, logParts: lPion } = qualiteSommet(pion, true); // ← true car pion actuel
+
     if (DO_LOG) {
       console.log("%c─────────────── 📍 Pions ───────────────", "color:gray; font-weight:bold;");
       console.groupCollapsed(`%c📍 Qualité du pion actuel : ${qPion.toFixed(2)} pts (ignoré)`, "color:gold; font-weight:bold;");
@@ -1862,7 +1901,6 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
   // ✅ Réaffiche la barre (transition CSS fluide)
   wrapper.classList.remove("empty");
   analyseBar.classList.remove("hidden");
-  console.log("🟢 Wrapper déployé (.empty retirée)");
   console.log("✅ analyse-bar affichée !");
 }
 
