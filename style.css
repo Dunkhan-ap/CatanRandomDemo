@@ -84,11 +84,6 @@ html, body {
 
 html { overflow-y: scroll; }
 
-/* ====== Classe utilitaire cachée ====== */
-.hidden {
-  display: none !important;
-}
-
 
 /* === Uniformisation des coches (même style que les pions) === */
 
@@ -189,6 +184,59 @@ input[type="radio"]:checked::after {
   flex-direction: column;
   align-items: center;
   width: 100%;
+}
+
+
+/* ===== Bloc d’analyse final ===== */
+/* --- Conteneur permanent qui garde la place --- */
+#analyse-wrapper {
+  width: 90%;
+  max-width: 80vmin;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden; /* évite le reflow */
+  transition: height 0.3s ease;
+}
+
+/* Barre visible */
+#analyse-wrapper:not(.empty) {
+  height: 10em; /* hauteur normale */
+}
+
+/* Barre cachée */
+#analyse-wrapper.empty {
+  height: 0; /* le trou disparaît */
+}
+
+
+
+/* --- Barre d’analyse visible/invisible --- */
+#analyse-bar {
+  margin-top: 1em;
+  background-color: rgba(0, 0, 0, 0.4); 
+  padding: 0.8em;
+  border-radius: 1vmin;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  text-align: center;
+  transition: opacity 0.25s ease-in-out, visibility 0.25s;
+}
+
+/* --- Classe cachée sans jump --- */
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
+
+/* ====== Classe utilitaire cachée ====== */
+.hidden {
+  display: none !important;
 }
 
 /* Badge sous le plateau */
@@ -628,19 +676,6 @@ input[type="radio"]:checked::after {
 .pos53 { top: 83.2%; left: 50%; }
 .pos54 { top: 83.2%; left: 62.4%; }
 
-
-/* ===== Bloc d’analyse final ===== */
-#analyse-bar {
-  margin-top: 1em;
-  background-color: rgba(0, 0, 0, 0.4);
-  padding: 0.8em;
-  border-radius: 1vmin;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4em;
-  text-align: center;
-  transition: opacity 0.25s ease-in-out, visibility 0.25s;
-}
 
 .badge {
   display: inline-block;

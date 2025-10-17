@@ -1052,6 +1052,14 @@ function generation(retryCount = 0) {
     afficherPions();
   } else {
     console.warn("⛔ afficherPions non exécuté : Colonie non cochée ou aucune couleur active.");
+    // 🚫 Cache directement la barre d’analyse
+    const analyseBar = document.getElementById("analyse-bar");
+    const wrapper = document.getElementById("analyse-wrapper");
+
+    if (analyseBar && wrapper) {
+      analyseBar.classList.add("hidden");
+      wrapper.classList.add("empty");
+    }
   }
 }
 
@@ -1789,7 +1797,8 @@ function analysePositionJoueur(pionsJoueur, tousLesPions, couleurJoueur = "incon
 // “colonie” et au moins une couleur sont cochées
 function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
   const analyseBar = document.getElementById("analyse-bar");
-  if (!analyseBar) return;
+  const wrapper = document.getElementById("analyse-wrapper");
+  if (!analyseBar || !wrapper) return;
 
   // Vérifie si les options "Colonie" et "Nombre" sont cochées
   const colonieChecked = document.getElementById("colonie")?.checked ?? false;
@@ -1799,40 +1808,31 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
   const couleursActives = ["Rouge", "Bleu", "Orange", "Beige"]
     .filter(c => document.getElementById(c)?.checked)
     .map(c => c.toLowerCase());
-
-  // 🧩 Conditions d'affichage
-  const doitAfficher = colonieChecked && nombreChecked && couleursActives.length > 0;
-
-  if (!doitAfficher) {
-    // Cache simplement la barre (ne vide rien, garde les valeurs en mémoire)
-    analyseBar.classList.add("hidden");
-    return;
-  }
-
-  // Détecte la langue courante
+    
+  // 🌍 Langue courante
   const currentLang =
     document.documentElement.lang ||
     document.querySelector("html")?.getAttribute("lang") ||
     "fr";
 
-  // Détermine le libellé du niveau selon la langue
+  // 🔤 Traduction du niveau
   const libNiv =
     i18n[currentLang]?.[`niv${niveau}`] ??
     i18n.fr?.[`niv${niveau}`] ??
     niveau;
 
-  // Met à jour les badges
+  // 🎫 Badges
   const niveauBadge = document.getElementById("niveau-badge");
   const ratioBadge = document.getElementById("ratio-badge");
   if (!niveauBadge || !ratioBadge) return;
 
-  const niveauLabel = i18n[currentLang]?.niveau ?? "Balancing";
+  const niveauLabel = i18n[currentLang]?.niveau ?? "Niveau";
   const ratioLabel = i18n[currentLang]?.ratio ?? "Ratio";
 
   niveauBadge.textContent = `${niveauLabel} : ${libNiv}`;
   ratioBadge.textContent = `${ratioLabel} : ${ratio.toFixed(2)} (≤ ${ratioCap.toFixed(2)})`;
 
-  // Couleur du badge ratio
+  // 🎨 Couleur du badge ratio
   ratioBadge.classList.remove("badge-ok", "badge-warn", "badge-danger");
   ratioBadge.classList.add(
     ratio <= ratioCap
@@ -1842,7 +1842,7 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
       : "badge-danger"
   );
 
-  // Met à jour la bande des scores
+  // 📊 Bande des scores
   const strip = document.getElementById("scores-strip");
   const fmt = v => Number(v).toFixed(2);
   const lignes = [];
@@ -1856,13 +1856,16 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
   if (couleursActives.includes("beige"))
     lignes.push(`<span><span class="dot dot-beige"></span>${fmt(scores.beige ?? 0)}</span>`);
 
-  // ⚙️ Met à jour sans supprimer le conteneur
+  // 🧩 Met à jour sans recréer l’élément
   strip.innerHTML = lignes.join(" | ");
 
-  // 🟢 Réaffiche la barre (les valeurs ont été mises à jour pendant qu’elle était cachée)
+  // ✅ Réaffiche la barre (transition CSS fluide)
+  wrapper.classList.remove("empty");
   analyseBar.classList.remove("hidden");
-  console.log("✅ analyse-bar affiché !");
+  console.log("🟢 Wrapper déployé (.empty retirée)");
+  console.log("✅ analyse-bar affichée !");
 }
+
 
 
 // === 🚀 Fonction demarrerGeneration ===
