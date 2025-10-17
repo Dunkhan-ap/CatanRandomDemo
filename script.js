@@ -1791,8 +1791,6 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
   const analyseBar = document.getElementById("analyse-bar");
   if (!analyseBar) return;
 
-  
-
   // Vérifie si les options "Colonie" et "Nombre" sont cochées
   const colonieChecked = document.getElementById("colonie")?.checked ?? false;
   const nombreChecked = document.getElementById("nombre")?.checked ?? false;
@@ -1802,37 +1800,39 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
     .filter(c => document.getElementById(c)?.checked)
     .map(c => c.toLowerCase());
 
-  // Si aucune colonie ou couleur → on sort sans rien faire
-  if (!colonieChecked || !nombreChecked ||  couleursActives.length === 0) {
-    // Cache
+  // 🧩 Conditions d'affichage
+  const doitAfficher = colonieChecked && nombreChecked && couleursActives.length > 0;
+
+  if (!doitAfficher) {
+    // Cache simplement la barre (ne vide rien, garde les valeurs en mémoire)
     analyseBar.classList.add("hidden");
     return;
   }
+
   // Détecte la langue courante
   const currentLang =
     document.documentElement.lang ||
-    document.querySelector("html").getAttribute("lang") ||
+    document.querySelector("html")?.getAttribute("lang") ||
     "fr";
 
   // Détermine le libellé du niveau selon la langue
-  const libNiv = i18n[currentLang]?.[`niv${niveau}`] 
-              ?? i18n.fr?.[`niv${niveau}`] 
-              ?? niveau;
-
+  const libNiv =
+    i18n[currentLang]?.[`niv${niveau}`] ??
+    i18n.fr?.[`niv${niveau}`] ??
+    niveau;
 
   // Met à jour les badges
   const niveauBadge = document.getElementById("niveau-badge");
   const ratioBadge = document.getElementById("ratio-badge");
   if (!niveauBadge || !ratioBadge) return;
 
-  // --- Badges traduits via i18n ---
   const niveauLabel = i18n[currentLang]?.niveau ?? "Balancing";
   const ratioLabel = i18n[currentLang]?.ratio ?? "Ratio";
 
   niveauBadge.textContent = `${niveauLabel} : ${libNiv}`;
   ratioBadge.textContent = `${ratioLabel} : ${ratio.toFixed(2)} (≤ ${ratioCap.toFixed(2)})`;
 
-
+  // Couleur du badge ratio
   ratioBadge.classList.remove("badge-ok", "badge-warn", "badge-danger");
   ratioBadge.classList.add(
     ratio <= ratioCap
@@ -1856,12 +1856,14 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
   if (couleursActives.includes("beige"))
     lignes.push(`<span><span class="dot dot-beige"></span>${fmt(scores.beige ?? 0)}</span>`);
 
+  // ⚙️ Met à jour sans supprimer le conteneur
   strip.innerHTML = lignes.join(" | ");
 
-  // Affiche seulement si conditions valides
+  // 🟢 Réaffiche la barre (les valeurs ont été mises à jour pendant qu’elle était cachée)
   analyseBar.classList.remove("hidden");
   console.log("✅ analyse-bar affiché !");
 }
+
 
 // === 🚀 Fonction demarrerGeneration ===
 // Cette fonction est appelée quand l’utilisateur clique sur “Génération”.
