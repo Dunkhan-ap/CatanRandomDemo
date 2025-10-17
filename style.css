@@ -76,6 +76,14 @@ button.loading {
   position: relative;
 }
 
+html, body { 
+  overscroll-behavior: contain; 
+  scroll-behavior: auto !important;
+  overflow-anchor: none; /* empêche Safari de "réancrer" la vue */
+}
+
+html { overflow-y: scroll; }
+
 /* === Uniformisation des coches (même style que les pions) === */
 
 /* Cache les cases natives */
