@@ -1873,7 +1873,17 @@ function afficherAnalyse({ niveau, scores, ratio, ratioCap = 1.10 }) {
 // Elle gère l’état visuel du bouton (grisé + texte animé), attend un court
 // instant pour que le navigateur rafraîchisse l’affichage, puis lance
 // réellement la génération du plateau via la fonction generation().
+let generationEnCours = false;
+
 function demarrerGeneration(retryCount = 0) {
+  // 🛑 Blocage instantané dès l’entrée
+  if (generationEnCours) {
+    console.warn("⏳ Génération déjà en cours, clic ignoré");
+    return;
+  }
+
+  generationEnCours = true; // 🔒 verrou immédiat
+
   const btn = document.getElementById("btn-generation");
   if (!btn) return;
 
@@ -1881,26 +1891,35 @@ function demarrerGeneration(retryCount = 0) {
   const lang = document.documentElement.lang || "fr";
   const startTime = performance.now();
 
-  // 🔹 Désactive le bouton pendant la génération
+  // 🔧 Désactive le bouton AVANT toute attente
   btn.disabled = true;
   btn.classList.add("loading");
+  btn.style.pointerEvents = "none"; // 🧱 stoppe tout second tap iPhone
   btn.textContent = i18n[lang]?.boutonLoading ?? "Génération...";
 
-  // ⚙️ Lance la génération après un léger délai
-  setTimeout(() => {
-    generation(retryCount);
+  // 💡 Exécution directe (pas besoin de délai ici)
+  requestAnimationFrame(() => {
+    try {
+      generation(retryCount);
 
-    // 🧭 Fin du chronomètre
-    const endTime = performance.now();
-    const duration = ((endTime - startTime) / 1000).toFixed(2);
-    console.log(`✅ Génération terminée en ${duration}s`);
-
-    // 🔓 Réactive le bouton
-    btn.disabled = false;
-    btn.classList.remove("loading");
-    btn.textContent = originalText;
-  }, 80);
+      const endTime = performance.now();
+      const duration = ((endTime - startTime) / 1000).toFixed(2);
+      console.log(`✅ Génération terminée en ${duration}s`);
+    } catch (err) {
+      console.error("❌ Erreur pendant la génération :", err);
+    } finally {
+      // 🧩 Réactivation une seule fois, avec un léger délai pour la sécurité tactile
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.classList.remove("loading");
+        btn.style.pointerEvents = "";
+        btn.textContent = originalText;
+        generationEnCours = false; // 🔓 déverrouillage final
+      }, 300);
+    }
+  });
 }
+
 
 
 
