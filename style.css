@@ -76,14 +76,6 @@ button.loading {
   position: relative;
 }
 
-html, body { 
-  overscroll-behavior: contain; 
-  scroll-behavior: auto !important;
-  overflow-anchor: none; /* empêche Safari de "réancrer" la vue */
-}
-
-html { overflow-y: scroll; }
-
 
 /* === Uniformisation des coches (même style que les pions) === */
 
@@ -200,17 +192,10 @@ input[type="radio"]:checked::after {
   transition: height 0.3s ease;
 }
 
-/* Barre visible */
-#analyse-wrapper:not(.empty) {
-  height: 10em; /* hauteur normale */
-}
-
 /* Barre cachée */
 #analyse-wrapper.empty {
   height: 0; /* le trou disparaît */
 }
-
-
 
 /* --- Barre d’analyse visible/invisible --- */
 #analyse-bar {
