@@ -200,21 +200,7 @@ input[type="radio"]:checked::after {
 }
 
 #analyse-wrapper:not(.empty) {
-  height: clamp(90px, 24vw, 160px);
-}
-
-/* Tablettes (iPad, écrans moyens) */
-@media (min-aspect-ratio: 4/3) {
-  #analyse-wrapper:not(.empty) {
-    height: clamp(80px, 16vw, 150px);
-  }
-}
-
-/* Ordinateurs portables et grands écrans */
-@media (min-aspect-ratio: 16/10) {
-  #analyse-wrapper:not(.empty) {
-    height: clamp(70px, 15vw, 140px);
-  }
+  height: 15svh;
 }
 
 
@@ -772,6 +758,25 @@ input[type="radio"]:checked::after {
   transform: scale(1.1);
   opacity: 0.9;
 }
+
+.logo-bas-droite {
+  position: fixed;      /* reste visible même au scroll */
+  bottom: 6vmin;         /* marge par rapport au bas */
+  right: 0vmin;          /* marge par rapport à la droite */
+  width: 12vmin;          /* taille du logo */
+  height: auto;         /* garde les proportions */
+  z-index: 1000;        /* reste au-dessus du contenu */
+  pointer-events: none; /* évite de bloquer les clics sur le contenu */
+}
+
+@media (min-width: 487px) {
+  .logo-bas-droite {
+    bottom: 0vmin;         /* marge par rapport au bas */
+    right: 0vmin;          /* marge par rapport à la droite */
+    width: 8vmin;          /* taille du logo */
+  }
+}
+
 
 
 
